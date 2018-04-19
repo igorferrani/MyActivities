@@ -1,0 +1,372 @@
+<!doctype html>
+<!--
+	My Activities
+	Copyright 2015 Google Inc. All rights reserved.
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+			https://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License
+-->
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>My Activities</title>
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="My Activities">
+	<link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+	<!-- Tile icon for Win8 (144x144 + tile color) -->
+	<meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+	<meta name="msapplication-TileColor" content="#3372DF">
+
+	<link rel="shortcut icon" href="images/favicon.png">
+
+	<!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+	<!--
+		<link rel="canonical" href="http://www.example.com/">
+		-->
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.deep_purple-pink.min.css">
+	<link rel="stylesheet" href="css/modal.bootstrap.css">
+	<link rel="stylesheet" href="css/modal.css">
+	<link rel="stylesheet" href="css/snack.css">
+	<link rel="stylesheet" href="css/styles.css">
+	<style>
+		#view-source {
+			position: fixed;
+			display: block;
+			right: 0;
+			bottom: 0;
+			margin-right: 40px;
+			margin-bottom: 40px;
+			z-index: 900;
+		}
+
+		.mdl-textfield {
+			width: 100% !important;
+			min-width: 100% !important;
+		}
+	</style>
+</head>
+
+<body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+
+	<main id="app">
+		<div class="modal fade" id="modalAddAtividade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel-2">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel-2">Nova Atividade</h4>
+					</div>
+
+					<div class="modal-body">
+						<form action="#" class="">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<!--pattern="[A-Z,a-z, ]*"-->
+								<input id="modalTituloAtividade" v-model="atividadeModal.tituloAtividade" class="mdl-textfield__input" type="text" id="Name">
+								<label class="mdl-textfield__label" for="Name">Título...</label>
+								<span class="mdl-textfield__error">Somente letras e espaços</span>
+							</div>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<textarea id="modalDescricaoAtividade" v-model="atividadeModal.descricaoAtividade" class="mdl-textfield__input" type="text"
+								 rows="5" id="note"></textarea>
+								<label class="mdl-textfield__label" for="note">Descrição da atividade</label>
+							</div>
+						</form>
+						<div style="padding-bottom:20px;text-align:right">
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" data-dismiss="modal">
+								Cancelar
+							</button>
+							<button v-if="atividadeEdicao" @click="btnRemoverAtividade(atividadeModal)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+							 type="button">
+								Excluir
+							</button>
+							<button @click="btnConfirmAddAtividade()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+							 type="button">
+								Salvar alterações
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="modalAddGrupo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel-2">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel-2">Nova Grupo de atividades</h4>
+					</div>
+
+					<div class="modal-body">
+						<form action="#" class="">
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+								<input v-model="grupoModal.nomeGrupo" class="mdl-textfield__input" type="text" id="Nome do grupo">
+								<label class="mdl-textfield__label" for="Name">Título...</label>
+								<span class="mdl-textfield__error">Somente letras e espaços</span>
+							</div>
+						</form>
+						<div style="padding-bottom:20px;text-align:right">
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" data-dismiss="modal">
+								Cancelar
+							</button>
+							<button v-if="grupoEdicao" @click="btnRemoverGrupo(grupoModal)" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
+							 type="button">
+								Excluir
+							</button>
+							<button @click="btnConfirmAddGrupo()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+							 type="button">
+								Salvar alterações
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+			<header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
+				<div class="mdl-layout--large-screen-only mdl-layout__header-row">
+				</div>
+				<div class="mdl-layout--large-screen-only mdl-layout__header-row">
+					<h3>My Activities</h3>
+				</div>
+				<div class="mdl-layout--large-screen-only mdl-layout__header-row">
+				</div>
+				<div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+					<a href="#overview" class="mdl-layout__tab is-active">Minhas atividades</a>
+					<!--<a href="#overview" class="mdl-layout__tab">Features</a>-->
+				</div>
+				<button style="position: absolute;
+				right: 40px;
+				top: 15px;
+				z-index: 999;" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="btn1">
+					<i class="material-icons">more_vert</i>
+				</button>
+				<ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right" for="btn1">
+					<!--<li class="mdl-menu__item" @click="btnAddGrupo()">Criar grupo de atividades</li>-->
+					<li class="mdl-menu__item" @click="btnSairApp()">Sair</li>
+				</ul>
+			</header>
+			<main class="mdl-layout__content">
+				<div class="mdl-layout__tab-panel is-active" id="overview">
+
+					<div class="list-atividades" style="margin-bottom: 40px;">
+						<section v-for="(atividade, key) in atividades" class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" style="margin-bottom: 5px;">
+							<div @click="btnEditarAtividade(atividade)" class="mdl-card mdl-cell mdl-cell--8-col" style="min-height: auto;width:calc(100% - 60px);float:left">
+								<div class="mdl-card__supporting-text" style="margin: 15px;">
+									<h4 style="margin-bottom:0">{{atividade.tituloAtividade}}</h4>
+									{{atividade.descricaoAtividade}}
+								</div>
+							</div>
+							<div class="block-status" style="float:right;width:60px;background-color:#fff">
+								<div @click="btnAlterarStatus(atividade)" class="content-status" style="width:40px;margin-left:auto;margin-right:15px;margin-top:10px">
+									<div v-if="atividade.status == 2">
+										<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+										 viewBox="0 0 426.667 426.667" style="enable-background:new 0 0 426.667 426.667;" xml:space="preserve">
+											<path style="fill:#6AC259;" d="M213.333,0C95.518,0,0,95.514,0,213.333s95.518,213.333,213.333,213.333
+												c117.828,0,213.333-95.514,213.333-213.333S331.157,0,213.333,0z M174.199,322.918l-93.935-93.931l31.309-31.309l62.626,62.622
+												l140.894-140.898l31.309,31.309L174.199,322.918z" />
+										</svg>
+									</div>
+									<div v-if="atividade.status == 1">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px"
+										 viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+											<g>
+												<circle style="fill:rgba(158,158,158,.4);" cx="64" cy="64" r="64" />
+											</g>
+										</svg>
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+
+			</main>
+		</div>
+
+		<button @click="btnAddAtividade()" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent"
+		 id="add">
+			<i class="material-icons" role="presentation">add</i>
+			<span class="visuallyhidden">Add</span>
+		</button>
+
+	</main>
+
+	<div id="snackbar">Some text some message..</div>
+
+	<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<script src="js/script.js"></script>
+	<script src="js/App.js"></script>
+	<script src="js/PatternAtividade.js"></script>
+	<script src="js/Atividade.js"></script>
+	<script src="js/PatternGrupo.js"></script>
+	<script src="js/Grupo.js"></script>
+	<script src="js/login.js"></script>
+	<script src="js/firebaseConfig.js"></script>
+
+	<script>		
+		// Inicia a instancia Vue
+		var app = new Vue({
+			el: '#app',
+			data: {
+				atividades: [],
+				grupos: [],
+				atividadeModal: new PatternAtividade({}),
+				grupoModal: new PatternGrupo({}),
+				atividadeEdicao: false,
+				grupoEdicao: false,
+				instanceAtividade: new Atividade()
+			},
+			methods: {
+				renderAtividades() {
+					_self = this;
+					_self.instanceAtividade.getAllAtividade().then(function (snap) {
+						app.atividades = new App().parseAtividades(snap.val());
+					});
+				},
+				btnAddAtividade() {
+					this.atividadeModal = new PatternAtividade({});
+					this.atividadeEdicao = false;
+					$("#modalAddAtividade").modal("show");
+				},
+				btnEditarAtividade(atividade) {
+					this.atividadeModal = atividade;
+					this.atividadeEdicao = true;
+					$("#modalAddAtividade").modal("show");
+				},
+				btnRemoverAtividade(atividade) {
+					_self = this;
+					_self.instanceAtividade.removeAtividade(_self.atividadeModal).then(function (snapshot) {
+						$("#modalAddAtividade").modal("hide");
+						app.renderAtividades();
+						new App().showSnack("Atividade removida");
+					}).catch(function (err) {
+						new App().showSnack("Erro ao remover atividade");
+					});
+				},
+				btnConfirmAddAtividade() {
+					_self = this;
+
+					// Se não for edição
+					if (!_self.atividadeEdicao) {
+						_self.atividadeModal.uidUsuario = window.user.uid;
+						_self.instanceAtividade.addAtividade(_self.atividadeModal).then(function (snapshot) {
+							$("#modalAddAtividade").modal("hide");
+							app.renderAtividades();
+							new App().showSnack("Atividade adicionada");
+						}).catch(function (err) {
+							new App().showSnack("Erro ao adicionar atividade");
+						});
+					} else {
+						_self.instanceAtividade.editAtividade(_self.atividadeModal).then(function (snapshot) {
+							$("#modalAddAtividade").modal("hide");
+							app.renderAtividades();
+							new App().showSnack("Atividade modificada");
+						}).catch(function (err) {
+							new App().showSnack("Erro ao adicionar atividade");
+						});
+					}
+				},
+				btnAlterarStatus(atividade) {
+					_self = this;
+					_self.instanceAtividade.updateStatusAtividade(atividade).then(function (snapshot) {
+						$("#modalAddAtividade").modal("hide");
+						app.renderAtividades();
+						new App().showSnack("Status alterado com sucesso !");
+					}).catch(function (err) {
+						new App().showSnack("Erro ao alterar status");
+					});
+				},
+
+
+
+
+
+
+
+				btnAddGrupo() {
+					this.grupoModal = new PatternGrupo({});
+					this.grupoEdicao = false;
+					$("#modalAddGrupo").modal("show");
+				},
+				btnEditarGrupo(grupo) {
+					this.grupoModal = grupo;
+					this.grupoEdicao = true;
+					$("#modalAddGrupo").modal("show");
+				},
+				btnRemoverGrupo(grupo) {
+					new Grupo().removeGrupo(_self.grupoModal).then(function (snapshot) {
+						$("#modalAddGrupo").modal("hide");
+						new App().showSnack("Grupo removido");
+					}).catch(function (err) {
+						new App().showSnack("Erro ao remover grupo >> ", err);
+					});
+				},
+				btnConfirmAddGrupo() {
+					_self = this;
+
+					// Se não for edição
+					if (!_self.grupoEdicao) {
+						_self.grupoModal.uidUsuario = window.user.uid;
+						new Grupo().addGrupo(_self.grupoModal).then(function (snapshot) {
+							$("#modalAddGrupo").modal("hide");
+							new App().showSnack("Grupo adicionada");
+						}).catch(function (err) {
+							new App().showSnack("Erro ao adicionar grupo >> ", err);
+						});
+					} else {
+						new Grupo().editGrupo(_self.grupoModal).then(function (snapshot) {
+							$("#modalAddGrupo").modal("hide");
+							new App().showSnack("Grupo adicionada");
+						}).catch(function (err) {
+							new App().showSnack("Erro ao adicionar grupo >> ", err);
+						});
+					}
+				},
+				btnSairApp() {
+					actionSignOut()
+				}
+			}
+		});
+
+		function callBackAuth(user) {
+			// Mock de Atividade
+			var atividade = new PatternAtividade({
+				tituloAtividade: "Estudar typescript",
+				descricaoAtividade: "tecnologia já em mercado e que preciso estudar o quanto antes"
+			});
+			app.renderAtividades();
+		}
+	</script>
+</body>
+
+</html>
